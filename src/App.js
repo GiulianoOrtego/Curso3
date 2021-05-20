@@ -1,178 +1,419 @@
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Table,
+  Button,
+  Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  FormGroup,
+  ModalFooter,
+} from "reactstrap";
 
-import React, {useState} from 'react';
-import {Formulario, Label, ContenedorTermino, ContenedorBotonCentral, Boton, MensajeExito, MensajeError} from './elementos/Formularios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import Input from './componentes/Input';
+const data = [
+  { id: "", 
+    nombre: "", 
+    apellido: "", 
+    documento: "", 
+    puesto: "", 
+    empresa: "",
+    ciudad: "", 
+    pais: "" },
+    
+  
+];
 
-const App = () => {
-	const [apellido, cambiarApellido] = useState({campo: '', valido: null});
-	const [nombre, cambiarNombre] = useState({campo: '', valido: null});
-	const [documento, cambiarDocumento] = useState({campo: '', valido: null});
-	const [puesto, cambiarPuesto] = useState({campo: '', valido: null});
-  	const [pais, cambiarPais] = useState({campo: '', valido: null});
-  	const [ciudad, cambiarCiudad] = useState({campo: '', valido: null});
-	const [correo, cambiarCorreo] = useState({campo: '', valido: null});
-	const [telefono, cambiarTelefono] = useState({campo: '', valido: null});
-	const [terminos, cambiarTerminos] = useState(false);
-	const [formularioValido, cambiarFormularioValido] = useState(null);
+class App extends React.Component {
+  state = {
+    data: data,
+    modalActualizar: false,
+    modalInsertar: false,
+    form: {
+      id: "",
+      nombre: "",
+      apellido: "",
+      documento: "",
+      empresa: "",
+      puesto: "",
+      ciudad: "",
+      pais: "",
+    },
+  };
 
-	const expresiones = {
-	apellido: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
-	nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
-    puesto: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
-    ciudad: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios pueden llevar acentos.
-    pais: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios pueden llevar acentos.
-	documento: /^.{4,12}$/, // 4 a 12 digitos.
-	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-	telefono: /^\d{7,14}$/ // 7 a 14 numeros.
-	}
+  mostrarModalActualizar = (dato) => {
+    this.setState({
+      form: dato,
+      modalActualizar: true,
+    });
+  };
 
-	const onChangeTerminos = (e) => {
-		cambiarTerminos(e.target.checked);
-	}
+  cerrarModalActualizar = () => {
+    this.setState({ modalActualizar: false });
+  };
 
-	const onSubmit = (e) => {
-		e.preventDefault();
+  mostrarModalInsertar = () => {
+    this.setState({
+      modalInsertar: true,
+    });
+  };
 
-		if(
-			apellido.valido === 'true' &&
-            nombre.valido === 'true' &&
-            documento.valido === 'true' &&
-            puesto.valido === 'true' &&
-            ciudad.valido === 'true' &&
-          	pais.valido === 'true' &&
-			correo.valido === 'true' &&
-			telefono.valido === 'true' &&
-			terminos
-		){
-			cambiarFormularioValido(true);
-			cambiarNombre({campo: '', valido: ''});
-			cambiarApellido({campo: '', valido: null});
-            cambiarDocumento({campo: '', valido: null});
-            cambiarPuesto({campo: '', valido: null});
-			cambiarCiudad({campo: '', valido: null});
-			cambiarPais({campo: '', valido: 'null'});
-			cambiarCorreo({campo: '', valido: null});
-			cambiarTelefono({campo: '', valido: null});
+  cerrarModalInsertar = () => {
+    this.setState({ modalInsertar: false });
+  };
 
-			// ... 
-		} else {
-			cambiarFormularioValido(false);
-		}
-	}
+  editar = (dato) => {
+    var contador = 0;
+    var arreglo = this.state.data;
+    arreglo.map((registro) => {
+      if (dato.id == registro.id) {
+          arreglo[contador].nombre = dato.nombre;
+          arreglo[contador].apellido = dato.apellido;
+          arreglo[contador].documento = dato.documento;
+          arreglo[contador].puesto = dato.puesto;
+          arreglo[contador].empresa = dato.empresa;
+          arreglo[contador].ciudad = dato.ciudad;
+          arreglo[contador].pais = dato.pais;
+      }
+      contador++;
+    });
+    this.setState({ data: arreglo, modalActualizar: false });
+  };
 
-	return (
-		<main>
-			<Formulario action="" onSubmit={onSubmit}>
-				<Input
-					estado={apellido}
-					cambiarEstado={cambiarApellido}
-					tipo="text"
-					label="Apellido"
-					placeholder="Apellido"
-					name="Apellido"
-					leyendaError="El Apellido solo puede contener letras"
-					expresionRegular={expresiones.apellido}
-				/>
-				<Input
-					estado={nombre}
-					cambiarEstado={cambiarNombre}
-					tipo="text"
-					label="Nombre"
-					placeholder="Nombre"
-					name="Nombre"
-					leyendaError="El nombre solo puede contener letras y espacios."
-					expresionRegular={expresiones.nombre}
-				/>
-				<Input
-					estado={documento}
-					cambiarEstado={cambiarDocumento}
-					tipo="text"
-					label="Documento"
-					placeholder="Documento"
-					name="Documento"
-					leyendaError="El Documento solo puede contener numeros y letras."
-					expresionRegular={expresiones.documento}
-				/>
-				<Input
-					estado={puesto}
-           			cambiarEstado={cambiarPuesto}
-            		tipo="text"
-            		label="Puesto"
-            		placeholder="Puesto"
-           			name="Puesto"
-           			leyendaError="El Puesto solo puede contener letras y espacios."
-            		expresionRegular={expresiones.puesto}
-				/>
-				<Input
-					estado={ciudad}
-            		cambiarEstado={cambiarCiudad}
-            		tipo="text"
-            		label="Ciudad"
-            		placeholder="Ciudad"
-            		name="Ciudad"
-            		leyendaError="El nombre solo puede contener letras y espacios."
-            		expresionRegular={expresiones.ciudad}
-				/>
-        <Input
-					estado={pais}
-            		cambiarEstado={cambiarPais}
-            		tipo="text"
-            		label="Pais"
-            		placeholder="Pais"
-            		name="Pais"
-            		leyendaError="El nombre solo puede contener letras y espacios."
-            		expresionRegular={expresiones.pais}
-		/>
-		<Input
-					estado={correo}
-					cambiarEstado={cambiarCorreo}
-					tipo="email"
-					label="Correo Electrónico"
-					placeholder="giuliano@correo.com"
-					name="correo"
-					leyendaError="El correo solo puede contener letras, numeros, puntos, guiones y guion bajo."
-					expresionRegular={expresiones.correo}
-		/>
-		<Input
-					estado={telefono}
-					cambiarEstado={cambiarTelefono}
-					tipo="text"
-					label="Teléfono"
-					placeholder="4491234567"
-					name="telefono"
-					leyendaError="El telefono solo puede contener numeros y el maximo son 14 dígitos."
-					expresionRegular={expresiones.telefono}
-		/>
+  eliminar = (dato) => {
+    var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.id);
+    if (opcion == true) {
+      var contador = 0;
+      var arreglo = this.state.data;
+      arreglo.map((registro) => {
+        if (dato.id == registro.id) {
+          arreglo.splice(contador, 1);
+          }
+        contador++;
+      });
+      this.setState({ data: arreglo, modalActualizar: false });
+    }
+  };
+
+  insertar= ()=>{
+    var valorNuevo= {...this.state.form};
+    valorNuevo.id=this.state.data.length+1;
+    var lista= this.state.data;
+    lista.push(valorNuevo);
+    this.setState({ modalInsertar: false, data: lista });
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      form: {
+        ...this.state.form,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+  render() {
+    
+    return (
+      <>
+        <Container>
+        <br />
+          <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Crear</Button>
+          <br />
+          <br />
+          <Table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Documento</th>
+                  <th>Puesto</th>
+                  <th>Empresa</th>
+                  <th>Ciudad</th>
+                  <th>Pais</th>
+                </tr>
+              </thead>
+
+            <tbody>
+              {this.state.data.map((dato) => (
+                <tr key={dato.id}>
+                  <td>{dato.id}</td>
+                  <td>{dato.nombre}</td>
+                  <td>{dato.apellido}</td>
+                  <td>{dato.documento}</td>
+                  <td>{dato.puesto}</td>
+                  <td>{dato.empresa}</td>
+                  <td>{dato.ciudad}</td>
+                  <td>{dato.pais}</td>
+                  <td>
+                    <Button
+                      color="primary"
+                      onClick={() => this.mostrarModalActualizar(dato)}
+                    >
+                      Editar
+                    </Button>{" "}
+                    <Button color="danger" onClick={()=> this.eliminar(dato)}>Eliminar</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+
+        <Modal isOpen={this.state.modalActualizar}>
+          <ModalHeader>
+           <div><h3>Editar Registro</h3></div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>
+               Id:
+              </label>
+            
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.form.id}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Nombre: 
+              </label>
+              <input
+                className="form-control"
+                name="nombre"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.nombre}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Apellido: 
+              </label>
+              <input
+                className="form-control"
+                name="apellido"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.apellido}
+              />
+            </FormGroup>
+
+
+            <FormGroup>
+              <label>
+                Documento: 
+              </label>
+              <input
+                className="form-control"
+                name="documento"
+                type="numero"
+                onChange={this.handleChange}
+                value={this.state.form.documento}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Puesto: 
+              </label>
+              <input
+                className="form-control"
+                name="puesto"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.puesto}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Empresa: 
+              </label>
+              <input
+                className="form-control"
+                name="empresa"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.puesto}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Ciudad: 
+              </label>
+              <input
+                className="form-control"
+                name="ciudad"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.ciudad}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Pais: 
+              </label>
+              <input
+                className="form-control"
+                name="pais"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.pais}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={() => this.editar(this.state.form)}
+            >
+              Editar
+            </Button>
+            <Button
+              color="danger"
+              onClick={() => this.cerrarModalActualizar()}
+            >
+              Cancelar
+            </Button>
+          </ModalFooter>
+        </Modal>
 
 
 
-		<ContenedorTermino>
-			<Label>
-				<input 
-					type="checkbox"
-					name="terminos"
-					id="terminos"
-					checked={terminos} 
-					onChange={onChangeTerminos}
-				/>
-					Acepto los Terminos y Condiciones
-			</Label>
-				</ContenedorTermino>
-				{formularioValido === false && <MensajeError>
-					<p>
-						<FontAwesomeIcon icon={faExclamationTriangle}/>
-						<b>Error:</b> Por favor rellena el formulario correctamente.
-					</p>
-				</MensajeError>}
-				<ContenedorBotonCentral>
-					<Boton type="submit">Enviar</Boton>
-					{formularioValido === true && <MensajeExito>Formulario enviado exitosamente!</MensajeExito>}
-				</ContenedorBotonCentral>
-			</Formulario>
-		</main>
-	);
+        <Modal isOpen={this.state.modalInsertar}>
+          <ModalHeader>
+           <div><h3>Agregar Datos</h3></div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>
+                Id: 
+              </label>
+              
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.data.length+1}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Nombre: 
+              </label>
+              <input
+                className="form-control"
+                name="nombre"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Apellido: 
+              </label>
+              <input
+                className="form-control"
+                name="apellido"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Documento: 
+              </label>
+              <input
+                className="form-control"
+                name="documento"
+                type="numero"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Puesto: 
+              </label>
+              <input
+                className="form-control"
+                name="puesto"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Empresa: 
+              </label>
+              <input
+                className="form-control"
+                name="empresa"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Ciudad: 
+              </label>
+              <input
+                className="form-control"
+                name="ciudad"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
+                Pais: 
+              </label>
+              <input
+                className="form-control"
+                name="pais"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={() => this.insertar()}
+            >
+              Insertar
+            </Button>
+            <Button
+              className="btn btn-danger"
+              onClick={() => this.cerrarModalInsertar()}
+            >
+              Cancelar
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
+    );
+  }
 }
- 
 export default App;
