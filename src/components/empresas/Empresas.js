@@ -1,7 +1,11 @@
 import React from 'react';
-import {Container} from "reactstrap";
-import ListadoEmpresas from './ListadoEmpresas';
 import FormularioEmpresas from './FormularioEmpresas';
+import ListadoEmpresas from './ListadoEmpresas';
+import {Container} from "reactstrap";
+
+
+
+
 
 class Empresas extends React.Component{
     
@@ -12,7 +16,7 @@ class Empresas extends React.Component{
             data:[],
             empresaseleccionado:null
         })
-        this.guardarDatosEmpresa = this.guardarDatosEmpresas.bind(this);
+        this.guardarDatosEmpresas = this.guardarDatosEmpresas.bind(this);
         this.seleccionarEmpresa = this.seleccionarEmpresa.bind(this);
         this.actualizarEmpresa = this.actualizarEmpresa.bind(this);
         this.eliminarEmpresa = this.eliminarEmpresa.bind(this);
@@ -57,21 +61,21 @@ class Empresas extends React.Component{
     /* Cuando das guardar en el formulario envia el pais nuevo y lo guarda en el array 
     del state llamado data */
 
-    actualizarEmpresa(Empresa){
-        const empresa = this.state.data.map(data => data.id === empresa.id ? empresa : data)
+    actualizarEmpresa(empresa){
+        const empresas = this.state.data.map(data => data.id === empresa.id ? empresa : data)
         this.setState({
-            data:empresa,
+            data:empresas,
             empresaseleccionado:null
         })
         this.guardarEnLocalStorage(this.state.data)
     }
 
     /* cuando das click en eliminar */
-    eliminarEmpresa(Empresa) {
-        const empresa = this.state.data.filter(data => data.id !== empresa.id)
+    eliminarEmpresa(empresa) {
+        const empresas = this.state.data.filter(data => data.id !== empresa.id)
         this.setState({
-            data:empresa,
-            empresaseleccionado:null
+            data:empresas,
+            empresasseleccionado:null
         })
         this.guardarEnLocalStorage(this.state.data);
     }
