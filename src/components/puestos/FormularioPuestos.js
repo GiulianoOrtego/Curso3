@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button,FormGroup,Alert} from "reactstrap";
 
-class FormularioEmpresas extends React.Component{
+class FormularioPuestos extends React.Component{
 
   constructor(props) {
     super(props);
@@ -11,9 +11,9 @@ class FormularioEmpresas extends React.Component{
 
   /* Cambia el pais seleccioando de acuerdo si se dio click en editar */
   componentDidUpdate(prevProps){
-    if(this.props.empresaSeleccionado !== prevProps.empresaSeleccionado) {
-      if(this.props.empresaSeleccionado !== null ){
-        this.setState({form: this.props.empresaSeleccionado[0]})
+    if(this.props.puestoSeleccionado !== prevProps.puestoSeleccionado) {
+      if(this.props.puestoSeleccionado !== null ){
+        this.setState({form: this.props.puestoSeleccionado[0]})
       }
       
     }
@@ -46,13 +46,13 @@ class FormularioEmpresas extends React.Component{
     }
 
     /* Si diste en editar entonces es actualizar*/
-    if(this.props.empresaSeleccionado === null)
+    if(this.props.puestoSeleccionado === null)
     {
-      this.props.guardarDatosEmpresas(this.state.form)
+      this.props.guardarDatosPuestos(this.state.form)
     }
     /* Sino agregar */
     else {
-      this.props.actualizarEmpresa(this.state.form)
+      this.props.actualizarPuesto(this.state.form)
     }
     this.setState(({
       form: {
@@ -108,4 +108,4 @@ render(){
     }
 }
 
-export default FormularioEmpresas;
+export default FormularioPuestos;
